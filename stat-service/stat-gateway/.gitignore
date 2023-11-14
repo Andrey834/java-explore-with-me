@@ -1,6 +1,8 @@
 HELP.md
-!.fastRequest
 !target/
+!mvnw
+!mvnw.cmd
+!.mvn
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -32,4 +34,3 @@ build/
 
 ### VS Code ###
 .vscode/
-!/stat-service/stat-server/target/
