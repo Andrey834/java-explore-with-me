@@ -1,15 +1,48 @@
-version: '3.1'
+version: '3.8'
 services:
+  stats-gateway:
+    build: stat-service/stat-gateway
+    image: stat-gateway
+    container_name: stat-gateway
+    ports:
+      - "9091:9091"
+    depends_on:
+      - stats-server
+    environment:
+      - STAT_GATEWAY_PORT=9091
+      - STAT_SERVER_URL=http://stats-server:9090
+
   stats-server:
+    build: stat-service/stat-server
+    image: stat-server
+    container_name: stat-server
     ports:
       - "9090:9090"
+    depends_on:
+      - stats-db
+    environment:
+      - STAT_SERVER_PORT=9090
+      - POSTGRES_URL=jdbc:postgresql://stats-db:5432/stats
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
 
   stats-db:
-    image: postgres:14-alpine
-
-  ewm-service:
+    image: postgres:16.0-alpine3.18
+    container_name: stats-db
+    volumes:
+      - /var/lib/postgresql/data/
     ports:
-      - "8080:8080"
+      - "6666:5432"
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=md5
+      - POSTGRES_DB=stats
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
 
-  ewm-db:
-    image: postgres:14-alpine
+  #ewm-service:
+  #  ports:
+  #    - "8080:8080"
+
+ # ewm-db:
+  #  image: postgres:16.0-alpine3.18
+#
