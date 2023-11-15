@@ -31,16 +31,14 @@ public class StatServiceImpl implements StatService {
     @Transactional(readOnly = true)
     @Override
     public List<ViewStats> get(String start, String end, boolean ip, Set<String> uris) {
-        List<ViewStats> result;
         LocalDateTime decodeStart = decodeDate(start);
         LocalDateTime decodeEnd = decodeDate(end);
 
-        if (ip && uris != null) result = repository.getHitsWithUrisAndUnique(decodeStart, decodeEnd, uris);
-        else if (ip & uris == null) result = repository.getHitsWithUnique(decodeStart, decodeEnd);
-        else if (uris != null) result = repository.getHitsWithUris(decodeStart, decodeEnd, uris);
-        else result = repository.getHits(decodeStart, decodeEnd);
+        if (ip && uris != null) return repository.getHitsWithUrisAndUnique(decodeStart, decodeEnd, uris);
+        if (ip & uris == null) return repository.getHitsWithUnique(decodeStart, decodeEnd);
+        if (uris != null) return repository.getHitsWithUris(decodeStart, decodeEnd, uris);
 
-        return result;
+        return repository.getHits(decodeStart, decodeEnd);
     }
 
     private LocalDateTime decodeDate(String date) {
