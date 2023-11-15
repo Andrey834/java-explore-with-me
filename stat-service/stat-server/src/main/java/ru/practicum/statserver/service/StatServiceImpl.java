@@ -35,7 +35,7 @@ public class StatServiceImpl implements StatService {
         LocalDateTime decodeEnd = decodeDate(end);
 
         if (ip && uris != null) return repository.getHitsWithUrisAndUnique(decodeStart, decodeEnd, uris);
-        if (ip & uris == null) return repository.getHitsWithUnique(decodeStart, decodeEnd);
+        if (ip) return repository.getHitsWithUnique(decodeStart, decodeEnd);
         if (uris != null) return repository.getHitsWithUris(decodeStart, decodeEnd, uris);
 
         return repository.getHits(decodeStart, decodeEnd);
