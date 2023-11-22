@@ -34,8 +34,6 @@ public class StatController {
                                                 name = "unique",
                                                 required = false,
                                                 defaultValue = "false") boolean unique) {
-        return ResponseEntity
-                .status(200)
-                .body(service.get(start, end, unique, uris));
+        return ResponseEntity.ok(service.get(start, end, unique, uris));
     }
 }
