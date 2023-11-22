@@ -9,10 +9,6 @@ import lombok.ToString;
 import ru.practicum.dto.category.CategoryDto;
 import ru.practicum.dto.user.UserShortDto;
 
-import javax.validation.constraints.Future;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 @Getter
 @Setter
 @ToString
