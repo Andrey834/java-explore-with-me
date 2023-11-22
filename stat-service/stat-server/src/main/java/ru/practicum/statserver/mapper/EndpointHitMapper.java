@@ -18,12 +18,11 @@ public class EndpointHitMapper {
     }
 
     public static EndpointHit toEndpointHit(EndpointHitDto endpointHitDto){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return EndpointHit.builder()
                 .app(endpointHitDto.getApp())
                 .uri(endpointHitDto.getUri())
                 .ip(endpointHitDto.getIp())
-                .timestamp(LocalDateTime.parse(endpointHitDto.getTimestamp(), formatter))
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 }
