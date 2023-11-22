@@ -1,0 +1,20 @@
+server:
+  port: ${MAIN_SERVER_PORT}
+spring:
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: off
+    open-in-view: false
+  sql:
+    init:
+      mode: always
+  jackson:
+    default-property-inclusion: non_null
+
+stat-client-url: ${STAT_CLIENT_URL}

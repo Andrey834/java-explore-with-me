@@ -30,12 +30,12 @@ public class StatServiceImpl implements StatService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ViewStats> get(String start, String end, boolean ip, Set<String> uris) {
+    public List<ViewStats> get(String start, String end, boolean isUnique, Set<String> uris) {
         LocalDateTime decodeStart = decodeDate(start);
         LocalDateTime decodeEnd = decodeDate(end);
 
-        if (ip && uris != null) return repository.getHitsWithUrisAndUnique(decodeStart, decodeEnd, uris);
-        if (ip) return repository.getHitsWithUnique(decodeStart, decodeEnd);
+        if (isUnique && uris != null) return repository.getHitsWithUrisAndUnique(decodeStart, decodeEnd, uris);
+        if (isUnique) return repository.getHitsWithUnique(decodeStart, decodeEnd);
         if (uris != null) return repository.getHitsWithUris(decodeStart, decodeEnd, uris);
 
         return repository.getHits(decodeStart, decodeEnd);
