@@ -14,6 +14,7 @@ import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventShortDto;
 import ru.practicum.ewmmain.enums.SortEvents;
 import ru.practicum.ewmmain.service.event.EventPublicService;
+import ru.practicum.ewmmain.util.ParamEvents;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Max;
@@ -43,9 +44,17 @@ public class EventPublicController {
             @RequestParam(name = "size", required = false, defaultValue = "10") @Min(1) @Max(100) Integer size,
             HttpServletRequest request
     ) {
+        ParamEvents paramEvents = ParamEvents.builder()
+                .text(text)
+                .categories(categories)
+                .paid(paid)
+                .rangeStart(rangeStart)
+                .rangeEnd(rangeEnd)
+                .onlyAvailable(onlyAvailable)
+                .sortEvents(sortEvents)
+                .build();
         PageRequest pageRequest = PageRequest.of(from, size);
-        return ResponseEntity.ok(service.getEventsPublicWithParam(
-                text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sortEvents, pageRequest, request));
+        return ResponseEntity.ok(service.getEventsPublicWithParam(paramEvents, pageRequest, request));
     }
 
     @GetMapping("/{eventId}")

@@ -29,7 +29,6 @@ public class RequestPrivateServiceImpl implements RequestPrivateService {
     private final UserService userService;
     private final EventPrivateService eventPrivateService;
 
-
     @Override
     public List<ParticipationRequestDto> getUserRequests(long userId) {
         userService.existsUserById(userId);

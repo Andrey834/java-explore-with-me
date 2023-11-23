@@ -14,6 +14,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -39,9 +40,9 @@ public class StatServiceImpl implements StatService {
             throw new QueryException(decodeStart + " not valid for start date");
         }
 
-        if (isUnique && uris != null) return repository.getHitsWithUrisAndUnique(decodeStart, decodeEnd, uris);
+        if (isUnique && uris != null && !uris.isEmpty()) return repository.getHitsWithUrisAndUnique(decodeStart, decodeEnd, uris);
         if (isUnique) return repository.getHitsWithUnique(decodeStart, decodeEnd);
-        if (uris != null) return repository.getHitsWithUris(decodeStart, decodeEnd, uris);
+        if (uris != null && !uris.isEmpty()) return repository.getHitsWithUris(decodeStart, decodeEnd, uris);
 
         return repository.getHits(decodeStart, decodeEnd);
     }

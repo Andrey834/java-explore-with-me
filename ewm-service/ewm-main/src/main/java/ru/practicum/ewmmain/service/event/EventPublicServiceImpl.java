@@ -15,9 +15,9 @@ import ru.practicum.ewmmain.exception.BadParamForEventSearchException;
 import ru.practicum.ewmmain.mapper.EventMapper;
 import ru.practicum.ewmmain.model.Event;
 import ru.practicum.ewmmain.repository.EventDao;
+import ru.practicum.ewmmain.util.ParamEvents;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -32,24 +32,27 @@ public class EventPublicServiceImpl implements EventPublicService {
     private final StatClient client;
 
     @Override
-    public List<EventShortDto> getEventsPublicWithParam(String text,
-                                                        List<Long> categories,
-                                                        Boolean paid,
-                                                        LocalDateTime rangeStart,
-                                                        LocalDateTime rangeEnd,
-                                                        Boolean onlyAvailable,
-                                                        SortEvents sortEvents,
+    public List<EventShortDto> getEventsPublicWithParam(ParamEvents paramEvents,
                                                         PageRequest pageRequest,
                                                         HttpServletRequest request) {
 
-        if (rangeEnd.isBefore(rangeStart)) throw new BadParamForEventSearchException(rangeEnd + " before start");
+        if (paramEvents.getRangeEnd().isBefore(paramEvents.getRangeStart())) {
+            throw new BadParamForEventSearchException(paramEvents.getRangeEnd() + " before start");
+        }
 
         List<EventShortDto> events = eventDao.getEventsPublicWithParam(
-                        text, paid, categories, onlyAvailable, rangeStart, rangeEnd, pageRequest).stream()
+                        paramEvents.getText(),
+                        paramEvents.getPaid(),
+                        paramEvents.getCategories(),
+                        paramEvents.getOnlyAvailable(),
+                        paramEvents.getRangeStart(),
+                        paramEvents.getRangeEnd(),
+                        pageRequest)
+                .stream()
                 .map(EventMapper::eventToEventShortDto)
                 .collect(Collectors.toList());
 
-        if (sortEvents == SortEvents.VIEWS) {
+        if (paramEvents.getSortEvents() == SortEvents.VIEWS) {
             events.sort(Comparator.comparing(EventShortDto::getViews));
         }
 
