@@ -24,17 +24,15 @@ public class StatController {
     @Cacheable(cacheNames = "viewStatList", key = "#start + '_' + #end + '_' + #unique + '_' + #uris")
     public ResponseEntity<Object> get(@RequestParam(name = "start") String start,
                                       @RequestParam(name = "end") String end,
-                                      @RequestParam(name = "unique", required = false, defaultValue = "false") boolean unique,
-                                      @RequestParam(name = "uris", required = false) String uris
-    ) {
+                                      @RequestParam(name = "uris", required = false) String uris,
+                                      @RequestParam(name = "unique", required = false, defaultValue = "false")
+                                          boolean unique) {
         return client.get(start, end, unique, uris);
     }
 
     @PostMapping("/hit")
     @CacheEvict(value = "viewStatList", allEntries = true)
-    public ResponseEntity<Object> hit(
-            @RequestBody EndpointHitDto endpointHitDto
-    ) {
+    public ResponseEntity<Object> hit(@RequestBody EndpointHitDto endpointHitDto) {
         return client.post(endpointHitDto);
     }
 }

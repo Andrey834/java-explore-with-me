@@ -1,6 +1,7 @@
 package ru.practicum.statserver.service;
 
 import lombok.RequiredArgsConstructor;
+import org.hibernate.QueryException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.statserver.mapper.EndpointHitMapper;
@@ -13,6 +14,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -30,13 +32,17 @@ public class StatServiceImpl implements StatService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ViewStats> get(String start, String end, boolean ip, Set<String> uris) {
+    public List<ViewStats> get(String start, String end, boolean isUnique, Set<String> uris) {
         LocalDateTime decodeStart = decodeDate(start);
         LocalDateTime decodeEnd = decodeDate(end);
 
-        if (ip && uris != null) return repository.getHitsWithUrisAndUnique(decodeStart, decodeEnd, uris);
-        if (ip) return repository.getHitsWithUnique(decodeStart, decodeEnd);
-        if (uris != null) return repository.getHitsWithUris(decodeStart, decodeEnd, uris);
+        if(decodeStart.isAfter(decodeEnd)) {
+            throw new QueryException(decodeStart + " not valid for start date");
+        }
+
+        if (isUnique && uris != null && !uris.isEmpty()) return repository.getHitsWithUrisAndUnique(decodeStart, decodeEnd, uris);
+        if (isUnique) return repository.getHitsWithUnique(decodeStart, decodeEnd);
+        if (uris != null && !uris.isEmpty()) return repository.getHitsWithUris(decodeStart, decodeEnd, uris);
 
         return repository.getHits(decodeStart, decodeEnd);
     }
