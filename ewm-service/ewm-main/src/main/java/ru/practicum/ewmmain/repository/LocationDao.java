@@ -16,7 +16,6 @@ public interface LocationDao extends JpaRepository<Location, Long> {
                    "FROM location l " +
                    "WHERE distance(lat, lon, :inLat, :inLon) <= cast(radius as float) " +
                    "ORDER BY distance(lat, lon, :inLat, :inLon) " +
-                   "LIMIT 1"
-            , nativeQuery = true)
+                   "LIMIT 1", nativeQuery = true)
     Optional<Location> getLocationByDistance(@Param(value = "inLat") float lat, @Param(value = "inLon") float lon);
 }

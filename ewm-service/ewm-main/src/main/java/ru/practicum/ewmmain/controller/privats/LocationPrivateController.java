@@ -20,7 +20,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping(path = "/users/{userId}/location")
 public class LocationPrivateController {
-private final LocationPrivateService locationPrivateService;
+    private final LocationPrivateService locationPrivateService;
+
     @PostMapping("/request")
     public ResponseEntity<LocationRequestDto> addLocationRequest(@PathVariable(name = "userId") long userId,
                                                                  @RequestBody NewLocationDto newLocationDto) {

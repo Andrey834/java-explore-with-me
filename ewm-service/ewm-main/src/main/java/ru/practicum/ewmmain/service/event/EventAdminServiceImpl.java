@@ -14,7 +14,6 @@ import ru.practicum.ewmmain.exception.BadDateEventException;
 import ru.practicum.ewmmain.exception.BadStatusEventException;
 import ru.practicum.ewmmain.mapper.CategoryMapper;
 import ru.practicum.ewmmain.mapper.EventMapper;
-import ru.practicum.ewmmain.mapper.LocationMapper;
 import ru.practicum.ewmmain.model.Category;
 import ru.practicum.ewmmain.model.Event;
 import ru.practicum.ewmmain.model.Location;

@@ -22,7 +22,6 @@ import ru.practicum.ewmmain.exception.BadParticipantRequestException;
 import ru.practicum.ewmmain.exception.BadStatusEventException;
 import ru.practicum.ewmmain.mapper.CategoryMapper;
 import ru.practicum.ewmmain.mapper.EventMapper;
-import ru.practicum.ewmmain.mapper.LocationMapper;
 import ru.practicum.ewmmain.mapper.RequestMapper;
 import ru.practicum.ewmmain.mapper.UserMapper;
 import ru.practicum.ewmmain.model.Category;
@@ -40,7 +39,6 @@ import ru.practicum.util.DateFormatter;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j

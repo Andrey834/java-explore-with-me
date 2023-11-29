@@ -1,7 +1,6 @@
 package ru.practicum.ewmmain.service.location;
 
 import ru.practicum.dto.location.LocationFullDto;
-import ru.practicum.dto.location.LocationShortDto;
 import ru.practicum.dto.location.NewLocationDto;
 import ru.practicum.dto.request.LocationRequestDto;
 import ru.practicum.dto.request.LocationRequestsResult;

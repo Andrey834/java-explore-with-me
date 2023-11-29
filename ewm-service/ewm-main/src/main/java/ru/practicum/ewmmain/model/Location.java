@@ -23,7 +23,7 @@ import javax.persistence.UniqueConstraint;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @EqualsAndHashCode(exclude = "id")
-@Table(uniqueConstraints={@UniqueConstraint(columnNames = {"description", "lat", "lon"})})
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"description", "lat", "lon"})})
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

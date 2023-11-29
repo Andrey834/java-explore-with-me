@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.location.LocationFullDto;
-import ru.practicum.dto.location.LocationShortDto;
 import ru.practicum.dto.location.NewLocationDto;
 import ru.practicum.dto.request.LocationRequestDto;
 import ru.practicum.dto.request.LocationRequestsResult;
