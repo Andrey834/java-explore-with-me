@@ -7,13 +7,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import ru.practicum.ewmmain.enums.LocationRequestStatus;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 @Entity
 @Getter
@@ -23,13 +24,15 @@ import javax.persistence.UniqueConstraint;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @EqualsAndHashCode(exclude = "id")
-@Table(uniqueConstraints={@UniqueConstraint(columnNames = {"description", "lat", "lon"})})
-public class Location {
+public class LocationRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    private long userId;
     private String description;
     private float lat;
     private float lon;
     private int radius;
+    @Enumerated(EnumType.STRING)
+    private LocationRequestStatus status;
 }

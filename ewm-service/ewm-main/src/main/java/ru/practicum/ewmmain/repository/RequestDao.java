@@ -29,5 +29,7 @@ public interface RequestDao extends JpaRepository<ParticipationRequest, Long> {
     List<ParticipationRequest> getParticipationRequest(@Param(value = "userId") long userId,
                                                        @Param(value = "eventId") long eventId);
 
+    List<ParticipationRequest> findAllByEventId(long eventId);
+
 
 }

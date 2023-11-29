@@ -10,6 +10,7 @@ import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventShortDto;
 import ru.practicum.dto.event.NewEventDto;
 import ru.practicum.dto.event.UpdateEventUserRequest;
+import ru.practicum.dto.location.LocationShortDto;
 import ru.practicum.dto.request.EventRequestStatusUpdateRequest;
 import ru.practicum.dto.request.EventRequestStatusUpdateResult;
 import ru.practicum.dto.request.ParticipationRequestDto;
@@ -30,6 +31,7 @@ import ru.practicum.ewmmain.model.Location;
 import ru.practicum.ewmmain.model.ParticipationRequest;
 import ru.practicum.ewmmain.model.User;
 import ru.practicum.ewmmain.repository.EventDao;
+import ru.practicum.ewmmain.repository.LocationDao;
 import ru.practicum.ewmmain.repository.RequestDao;
 import ru.practicum.ewmmain.service.category.CategoryPublicService;
 import ru.practicum.ewmmain.service.user.UserService;
@@ -38,6 +40,7 @@ import ru.practicum.util.DateFormatter;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -49,6 +52,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     private final RequestDao requestDao;
     private final CategoryPublicService categoryPublicService;
     private final UserService userService;
+    private final LocationDao locationDao;
 
     @Override
     public List<EventShortDto> getEvents(long userId, PageRequest pageRequest) {
@@ -68,8 +72,13 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
         CategoryDto category = categoryPublicService.getCategory(newEventDto.getCategory());
 
+        LocationShortDto locationShortDto = newEventDto.getLocation();
+        Location location = locationDao.getLocationByDistance(locationShortDto.getLat(), locationShortDto.getLon())
+                .orElseThrow(() -> new NoSuchElementException("No suitable location found"));
+
         User user = UserMapper.userDtoToUser(userService.getUserDto(userId));
-        Event event = EventMapper.newEventDtoToEvent(user, CategoryMapper.categoryDtoToCategory(category), newEventDto);
+        Event event = EventMapper.newEventDtoToEvent(
+                user, CategoryMapper.categoryDtoToCategory(category), newEventDto, location);
 
         return EventMapper.eventToEventFullDto(eventDao.save(event));
     }
@@ -117,18 +126,22 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         Event event = findById(eventId);
         if (event.getParticipantLimit().longValue() == event.getConfirmedRequests()) {
             throw new BadParticipantRequestException("limit on applications reached");
+        } else if (event.getInitiator().getId() != eventId) {
+            throw new BadParticipantRequestException("This is not your event");
         }
 
         long limit = event.getParticipantLimit() - event.getConfirmedRequests();
 
-        List<ParticipationRequest> requests = requestDao.findAllById(updateRequestStatus.getRequestIds());
+        List<ParticipationRequest> requests = requestDao.findAllByEventId(eventId);
 
         for (ParticipationRequest request : requests) {
             if (request.getStatus() != ParticipationRequestStatus.PENDING) {
                 continue;
             }
 
-            if (updateRequestStatus.getStatus().equals("CONFIRMED") && limit > 0) {
+            if (updateRequestStatus.getStatus().equals("CONFIRMED") && limit > 0
+                && updateRequestStatus.getRequestIds().contains(request.getId())) {
+
                 request.setStatus(ParticipationRequestStatus.CONFIRMED);
                 result.getConfirmedRequests().add(RequestMapper.requestToRequestDto(request));
                 event.setConfirmedRequests(event.getConfirmedRequests() + 1);
@@ -137,7 +150,6 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                 request.setStatus(ParticipationRequestStatus.REJECTED);
                 result.getRejectedRequests().add(RequestMapper.requestToRequestDto(request));
             }
-
         }
         eventDao.save(event);
         requestDao.saveAll(requests);
@@ -170,7 +182,8 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
         Location location = request.getLocation() == null
                 ? event.getLocation()
-                : LocationMapper.locationDtoToLocation(request.getLocation());
+                : locationDao.getLocationByDistance(request.getLocation().getLat(), request.getLocation().getLon())
+                .orElseThrow(() -> new NoSuchElementException("No suitable location found"));
 
         boolean paid = request.getPaid() == null ? event.isPaid() : request.getPaid();
 

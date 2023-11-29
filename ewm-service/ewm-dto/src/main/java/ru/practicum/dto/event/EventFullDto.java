@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import ru.practicum.dto.category.CategoryDto;
+import ru.practicum.dto.location.LocationShortDto;
 import ru.practicum.dto.user.UserShortDto;
 
 @Getter
@@ -24,7 +25,7 @@ public class EventFullDto {
     private String description;
     private String eventDate;
     private UserShortDto initiator;
-    private LocationDto location;
+    private LocationShortDto location;
     private boolean paid;
     private Integer participantLimit;
     private String publishedOn;

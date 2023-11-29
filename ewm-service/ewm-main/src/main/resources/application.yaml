@@ -1,5 +1,6 @@
 server:
-  port: ${MAIN_SERVER_PORT}
+#  port: ${MAIN_SERVER_PORT}
+  port: 8080
 spring:
   datasource:
     url: ${POSTGRES_URL}
