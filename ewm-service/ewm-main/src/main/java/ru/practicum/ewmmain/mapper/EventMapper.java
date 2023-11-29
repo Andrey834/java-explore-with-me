@@ -6,6 +6,7 @@ import ru.practicum.dto.event.NewEventDto;
 import ru.practicum.ewmmain.enums.StateEvent;
 import ru.practicum.ewmmain.model.Category;
 import ru.practicum.ewmmain.model.Event;
+import ru.practicum.ewmmain.model.Location;
 import ru.practicum.ewmmain.model.User;
 import ru.practicum.util.DateFormatter;
 
@@ -48,13 +49,13 @@ public class EventMapper {
                 .build();
     }
 
-    public static Event newEventDtoToEvent(User user, Category category, NewEventDto newEventDto) {
+    public static Event newEventDtoToEvent(User user, Category category, NewEventDto newEventDto, Location location) {
         return Event.builder()
                 .annotation(newEventDto.getAnnotation())
                 .category(category)
                 .description(newEventDto.getDescription())
                 .eventDate(LocalDateTime.parse(newEventDto.getEventDate(), DateFormatter.FORMATTER))
-                .location(LocationMapper.locationDtoToLocation(newEventDto.getLocation()))
+                .location(location)
                 .initiator(user)
                 .paid(newEventDto.isPaid())
                 .state(StateEvent.PENDING)

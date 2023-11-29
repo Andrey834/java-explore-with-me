@@ -10,6 +10,7 @@ import ru.practicum.ewmmain.model.Event;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface EventDao extends JpaRepository<Event, Long> {
@@ -47,4 +48,6 @@ public interface EventDao extends JpaRepository<Event, Long> {
                                          PageRequest pageRequest);
 
     List<Event> findAllByInitiatorIdOrderByEventDate(long userId, PageRequest pageRequest);
+
+    Optional<Event> findByIdAndState(long eventId, StateEvent stateEvent);
 }

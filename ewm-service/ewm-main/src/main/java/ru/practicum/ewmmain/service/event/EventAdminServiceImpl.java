@@ -14,12 +14,12 @@ import ru.practicum.ewmmain.exception.BadDateEventException;
 import ru.practicum.ewmmain.exception.BadStatusEventException;
 import ru.practicum.ewmmain.mapper.CategoryMapper;
 import ru.practicum.ewmmain.mapper.EventMapper;
-import ru.practicum.ewmmain.mapper.LocationMapper;
 import ru.practicum.ewmmain.model.Category;
 import ru.practicum.ewmmain.model.Event;
 import ru.practicum.ewmmain.model.Location;
 import ru.practicum.ewmmain.repository.CategoryDao;
 import ru.practicum.ewmmain.repository.EventDao;
+import ru.practicum.ewmmain.repository.LocationDao;
 import ru.practicum.util.DateFormatter;
 
 import java.time.LocalDateTime;
@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 public class EventAdminServiceImpl implements EventAdminService {
     private final EventDao eventDao;
     private final CategoryDao categoryDao;
+    private final LocationDao locationDao;
 
     @Override
     public List<EventFullDto> getEvents(List<Long> users,
@@ -84,7 +85,8 @@ public class EventAdminServiceImpl implements EventAdminService {
 
         Location location = request.getLocation() == null
                 ? event.getLocation()
-                : LocationMapper.locationDtoToLocation(request.getLocation());
+                : locationDao.getLocationByDistance(request.getLocation().getLat(), request.getLocation().getLon())
+                .orElseThrow(() -> new NoSuchElementException("No suitable location found"));
 
         boolean paid = request.getPaid() == null ? event.isPaid() : request.getPaid();
 

@@ -1,4 +1,4 @@
-package ru.practicum.dto.category;
+package ru.practicum.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,9 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.validator.constraints.Length;
-
-import javax.validation.constraints.NotBlank;
+import ru.practicum.dto.location.NewLocationDto;
 
 @Getter
 @Setter
@@ -16,8 +14,9 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class NewCategoryDto {
-    @NotBlank
-    @Length(min = 1, max = 50)
-    private String name;
+public class LocationRequestDto {
+    private long id;
+    private long userId;
+    private NewLocationDto location;
+    private String status;
 }

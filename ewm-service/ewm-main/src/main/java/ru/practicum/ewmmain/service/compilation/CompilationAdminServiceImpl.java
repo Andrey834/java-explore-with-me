@@ -31,6 +31,10 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
     public CompilationDto saveCompilation(NewCompilationDto newCompilationDto) {
         List<Event> events = getEventsByIds(newCompilationDto.getEvents());
 
+        if (events.isEmpty()) {
+            throw new NoSuchElementException("Events was not found");
+        }
+
         Compilation compilation = compilationDao.save(
                 CompilationMapper.newCompilationDtoToCompilation(newCompilationDto, events));
 

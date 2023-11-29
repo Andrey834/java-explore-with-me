@@ -56,6 +56,15 @@ public class EventPublicServiceImpl implements EventPublicService {
             events.sort(Comparator.comparing(EventShortDto::getViews));
         }
 
+        StringBuilder sb = new StringBuilder();
+        events.forEach(req -> sb.append("/events/").append(req.getId()).append(","));
+        List<ViewStats> stats = client.getStat(sb.toString());
+
+        events.forEach(event -> event.setViews(stats.stream()
+                .filter(stat -> stat.getUri().equals("/events/" + event.getId()))
+                .map(ViewStats::getHits)
+                .findFirst()
+                .orElse(0L)));
 
         client.sendHit("EWM", request.getRequestURI(), request.getRemoteAddr());
         return events;
@@ -64,12 +73,8 @@ public class EventPublicServiceImpl implements EventPublicService {
     @Override
     @Transactional
     public EventFullDto getEvent(long eventId, HttpServletRequest request) {
-        Event event = eventDao.findById(eventId).orElseThrow(
+        Event event = eventDao.findByIdAndState(eventId, StateEvent.PUBLISHED).orElseThrow(
                 () -> new NoSuchElementException("Event with ID=" + eventId + " was not found"));
-
-        if (event.getState() != StateEvent.PUBLISHED) {
-            throw new NoSuchElementException("Event with ID=" + eventId + " was not found");
-        }
 
         client.sendHit("EWM", request.getRequestURI(), request.getRemoteAddr());
         List<ViewStats> stats = client.getStat(request.getRequestURI());

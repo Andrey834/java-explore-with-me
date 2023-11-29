@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
+import ru.practicum.dto.location.LocationShortDto;
 
 import javax.validation.constraints.NotBlank;
 
@@ -25,7 +26,7 @@ public class NewEventDto {
     @Length(min = 20, max = 7000)
     private String description;
     private String eventDate;
-    private LocationDto location;
+    private LocationShortDto location;
     private boolean paid;
     private Integer participantLimit = 0;
     private boolean requestModeration = true;
