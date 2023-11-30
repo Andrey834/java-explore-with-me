@@ -19,11 +19,15 @@ public interface EventDao extends JpaRepository<Event, Long> {
                    "WHERE (:users is null OR e.initiator.id IN :users) " +
                    "AND (:states is null OR e.state IN :states) " +
                    "AND (:categories is null OR e.category.id IN :categories) " +
+                   "AND (:lat is null " +
+                   " OR cast(e.location.radius as float) >= distance(e.location.lat, e.location.lon, :lat, :lon)) " +
                    "AND e.eventDate BETWEEN :rangeStart AND :rangeEnd " +
                    "ORDER BY e.id")
     List<Event> getEventsAdminWithParam(@Param(value = "users") List<Long> users,
                                         @Param(value = "states") List<StateEvent> states,
                                         @Param(value = "categories") List<Long> categories,
+                                        @Param(value = "lat") Float lat,
+                                        @Param(value = "lon") Float lon,
                                         @Param(value = "rangeStart") LocalDateTime rangeStart,
                                         @Param(value = "rangeEnd") LocalDateTime rangeEnd,
                                         PageRequest pageRequest);
@@ -35,6 +39,8 @@ public interface EventDao extends JpaRepository<Event, Long> {
                    "OR lower(e.description) like lower(concat('%',:text,'%')))) " +
                    "AND (:paid is null OR e.paid = :paid) " +
                    "AND (:categories is null OR e.category.id IN :categories) " +
+                   "AND (:lat is null " +
+                   " OR cast(e.location.radius as float) >= distance(e.location.lat, e.location.lon, :lat, :lon)) " +
                    "AND (:onlyAvailable is null OR e.participantLimit > e.confirmedRequests) " +
                    "AND e.state = 'PUBLISHED' " +
                    "ORDER BY e.eventDate DESC")
@@ -42,6 +48,8 @@ public interface EventDao extends JpaRepository<Event, Long> {
                                          @Param(value = "paid") Boolean paid,
                                          @Param(value = "categories") List<Long> categories,
                                          @Param(value = "onlyAvailable") Boolean onlyAvailable,
+                                         @Param(value = "lat") Float lat,
+                                         @Param(value = "lon") Float lon,
                                          @Param(value = "rangeStart") LocalDateTime rangeStart,
                                          @Param(value = "rangeEnd") LocalDateTime rangeEnd,
                                          PageRequest pageRequest);

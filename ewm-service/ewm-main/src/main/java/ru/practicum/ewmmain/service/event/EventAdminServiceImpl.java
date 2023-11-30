@@ -1,12 +1,13 @@
 package ru.practicum.ewmmain.service.event;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.UpdateEventAdminRequest;
+import ru.practicum.dto.location.LocationDto;
+import ru.practicum.ewmmain.client.RestClient;
 import ru.practicum.ewmmain.enums.StateAction;
 import ru.practicum.ewmmain.enums.StateEvent;
 import ru.practicum.ewmmain.exception.BadDataEventException;
@@ -27,23 +28,31 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class EventAdminServiceImpl implements EventAdminService {
     private final EventDao eventDao;
     private final CategoryDao categoryDao;
+    private final RestClient client;
 
     @Override
     public List<EventFullDto> getEvents(List<Long> users,
                                         List<StateEvent> states,
                                         List<Long> categories,
+                                        String address,
                                         LocalDateTime rangeStart,
                                         LocalDateTime rangeEnd,
                                         PageRequest pageRequest) {
+        Float lat = null;
+        Float lon = null;
+        if (address != null) {
+            LocationDto locationDto = client.getLocationFromAddress(address);
+            lat = locationDto.getLat();
+            lon = locationDto.getLon();
+        }
 
-        return eventDao.getEventsAdminWithParam(users, states, categories, rangeStart, rangeEnd, pageRequest)
+        return eventDao.getEventsAdminWithParam(users, states, categories, lat, lon, rangeStart, rangeEnd, pageRequest)
                 .stream()
                 .map(EventMapper::eventToEventFullDto)
                 .collect(Collectors.toList());

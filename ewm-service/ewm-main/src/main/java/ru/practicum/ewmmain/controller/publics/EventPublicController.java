@@ -39,11 +39,15 @@ public class EventPublicController {
             @RequestParam(name = "rangeEnd", required = false, defaultValue = "2300-01-01 12:00:00")
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
             @RequestParam(name = "onlyAvailable", required = false) Boolean onlyAvailable,
+            @RequestParam(name = "address", required = false) String address,
             @RequestParam(name = "sort", required = false) SortEvents sortEvents,
             @RequestParam(name = "from", required = false, defaultValue = "0") @Min(1) Integer from,
             @RequestParam(name = "size", required = false, defaultValue = "10") @Min(1) @Max(100) Integer size,
             HttpServletRequest request
     ) {
+
+        log.info("Public {} Events from ip address: {}", request.getMethod(), request.getRemoteAddr());
+
         ParamEvents paramEvents = ParamEvents.builder()
                 .text(text)
                 .categories(categories)
@@ -51,6 +55,7 @@ public class EventPublicController {
                 .rangeStart(rangeStart)
                 .rangeEnd(rangeEnd)
                 .onlyAvailable(onlyAvailable)
+                .address(address)
                 .sortEvents(sortEvents)
                 .build();
         PageRequest pageRequest = PageRequest.of(from, size);
@@ -60,6 +65,10 @@ public class EventPublicController {
     @GetMapping("/{eventId}")
     public ResponseEntity<EventFullDto> getEvent(@PathVariable(name = "eventId") long eventId,
                                                  HttpServletRequest request) {
+
+        log.info("Public {} Event №{} from ip address: {}",
+                request.getMethod(), eventId, request.getRemoteAddr());
+
         return ResponseEntity.ok(service.getEvent(eventId, request));
     }
 }
