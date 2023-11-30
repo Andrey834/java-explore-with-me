@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import ru.practicum.dto.category.CategoryDto;
+import ru.practicum.dto.location.LocationDto;
 import ru.practicum.dto.user.UserShortDto;
 
 @Getter

@@ -16,5 +16,10 @@ spring:
       mode: always
   jackson:
     default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      read-date-timestamps-as-nanoseconds: false
 
 stat-client-url: ${STAT_CLIENT_URL}
+map-yandex-key: ${MAP_YANDEX_KEY}

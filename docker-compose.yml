@@ -41,6 +41,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - STAT_CLIENT_URL=http://stats-gateway:9091
+      - MAP_YANDEX_KEY=a24a2214-93cf-41a8-9f34-4d953f912424
 
   stats-db:
     image: postgres:16.0-alpine3.18

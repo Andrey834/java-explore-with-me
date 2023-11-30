@@ -22,6 +22,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
+import javax.persistence.Transient;
 import java.time.LocalDateTime;
 
 @Entity
@@ -60,7 +61,8 @@ public class Event {
     @Enumerated(value = EnumType.STRING)
     private StateEvent state;
     private String title;
-    private Long views;
+    @Transient
+    private Long views = 0L;
 
     @PrePersist
     private void createdAt() {

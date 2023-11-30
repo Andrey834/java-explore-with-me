@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
+import ru.practicum.dto.location.LocationDto;
 
 import javax.validation.constraints.NotBlank;
 
