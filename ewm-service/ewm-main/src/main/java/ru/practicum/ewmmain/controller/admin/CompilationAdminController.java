@@ -17,6 +17,7 @@ import ru.practicum.dto.compilation.NewCompilationDto;
 import ru.practicum.dto.compilation.UpdateCompilationRequest;
 import ru.practicum.ewmmain.service.compilation.CompilationAdminServiceImpl;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @Slf4j
@@ -27,21 +28,33 @@ public class CompilationAdminController {
     private final CompilationAdminServiceImpl service;
 
     @PostMapping()
-    public ResponseEntity<CompilationDto> saveCompilation(
-            @Valid @RequestBody NewCompilationDto newCompilationDto) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(service.saveCompilation(newCompilationDto));
+    public ResponseEntity<CompilationDto> saveCompilation(@Valid @RequestBody NewCompilationDto newCompilationDto,
+                                                          HttpServletRequest request) {
+
+        CompilationDto compilationDto = service.saveCompilation(newCompilationDto);
+
+        log.info("Admin {} Compilation №{} from ip address: {}",
+                request.getMethod(), compilationDto.getId(), request.getRemoteAddr());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(compilationDto);
     }
 
     @DeleteMapping("/{compId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCompilation(@PathVariable(name = "compId") long compId) {
+    public void deleteCompilation(@PathVariable(name = "compId") long compId, HttpServletRequest request) {
+
+        log.info("Admin {} Compilation №{} from ip address: {}", request.getMethod(), compId, request.getRemoteAddr());
+
         service.deleteCompilation(compId);
     }
 
     @PatchMapping("/{compId}")
     public ResponseEntity<CompilationDto> updateCompilation(@PathVariable(name = "compId") long compId,
-                                                            @Valid @RequestBody UpdateCompilationRequest updCompReq) {
+                                                            @Valid @RequestBody UpdateCompilationRequest updCompReq,
+                                                            HttpServletRequest request) {
+
+        log.info("Admin {} Compilation №{} from ip address: {}", request.getMethod(), compId, request.getRemoteAddr());
+
         return ResponseEntity.ok(service.updateCompilation(compId, updCompReq));
     }
 }
