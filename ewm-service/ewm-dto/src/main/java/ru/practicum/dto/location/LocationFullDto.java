@@ -1,4 +1,4 @@
-package ru.practicum.dto.event;
+package ru.practicum.dto.location;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +13,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class LocationDto {
+public class LocationFullDto {
+    private long id;
     private float lat;
     private float lon;
+    private int radius;
 }

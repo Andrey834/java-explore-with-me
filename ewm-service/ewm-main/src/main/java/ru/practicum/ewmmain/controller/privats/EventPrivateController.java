@@ -1,6 +1,7 @@
 package ru.practicum.ewmmain.controller.privats;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +22,13 @@ import ru.practicum.dto.request.EventRequestStatusUpdateResult;
 import ru.practicum.dto.request.ParticipationRequestDto;
 import ru.practicum.ewmmain.service.event.EventPrivateService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/users/{userId}/events")
@@ -36,9 +39,12 @@ public class EventPrivateController {
     public ResponseEntity<List<EventShortDto>> getEvents(
             @PathVariable(name = "userId") long userId,
             @RequestParam(name = "from", required = false, defaultValue = "0") @Min(1) Integer from,
-            @RequestParam(name = "size", required = false, defaultValue = "10") @Min(1) @Max(100) Integer size) {
-        PageRequest pageRequest = PageRequest.of(from, size, Sort.by("id"));
+            @RequestParam(name = "size", required = false, defaultValue = "10") @Min(1) @Max(100) Integer size,
+            HttpServletRequest request) {
 
+        log.info("User {} {} Events from ip address: {}", userId, request.getMethod(), request.getRemoteAddr());
+
+        PageRequest pageRequest = PageRequest.of(from, size, Sort.by("id"));
         return ResponseEntity
                 .status(200)
                 .body(eventPrivateService.getEvents(userId, pageRequest));
@@ -47,7 +53,11 @@ public class EventPrivateController {
     @PostMapping
     public ResponseEntity<EventFullDto> addEvent(
             @PathVariable(name = "userId") long userId,
-            @Valid @RequestBody NewEventDto newEventDto) {
+            @Valid @RequestBody NewEventDto newEventDto,
+            HttpServletRequest request) {
+
+        log.info("User {} {} Event from ip address: {}", userId, request.getMethod(), request.getRemoteAddr());
+
         return ResponseEntity
                 .status(201)
                 .body(eventPrivateService.addEvent(userId, newEventDto));
@@ -56,7 +66,12 @@ public class EventPrivateController {
     @GetMapping("/{eventId}")
     public ResponseEntity<EventFullDto> getEvent(
             @PathVariable(name = "userId") long userId,
-            @PathVariable(name = "eventId") long eventId) {
+            @PathVariable(name = "eventId") long eventId,
+            HttpServletRequest request) {
+
+        log.info("User {} {} Event №{} from ip address: {}",
+                userId, request.getMethod(), eventId, request.getRemoteAddr());
+
         return ResponseEntity.ok(eventPrivateService.getEvent(userId, eventId));
     }
 
@@ -64,14 +79,24 @@ public class EventPrivateController {
     public ResponseEntity<EventFullDto> updateEvent(
             @PathVariable(name = "userId") long userId,
             @PathVariable(name = "eventId") long eventId,
-            @Valid @RequestBody UpdateEventUserRequest updateEventUserRequest) {
+            @Valid @RequestBody UpdateEventUserRequest updateEventUserRequest,
+            HttpServletRequest request) {
+
+        log.info("User {} {} Event №{} from ip address: {}",
+                userId, request.getMethod(), eventId, request.getRemoteAddr());
+
         return ResponseEntity.ok(eventPrivateService.updateEvent(userId, eventId, updateEventUserRequest));
     }
 
     @GetMapping("/{eventId}/requests")
     public ResponseEntity<List<ParticipationRequestDto>> getEventParticipants(
             @PathVariable(name = "userId") long userId,
-            @PathVariable(name = "eventId") long eventId) {
+            @PathVariable(name = "eventId") long eventId,
+            HttpServletRequest request) {
+
+        log.info("User {} {} Requests for Event №{} from ip address: {}",
+                userId, request.getMethod(), eventId, request.getRemoteAddr());
+
         return ResponseEntity.ok(eventPrivateService.getEventParticipants(userId, eventId));
     }
 
@@ -79,7 +104,12 @@ public class EventPrivateController {
     public ResponseEntity<EventRequestStatusUpdateResult> changeRequestStatus(
             @PathVariable(name = "userId") long userId,
             @PathVariable(name = "eventId") long eventId,
-            @RequestBody EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest) {
+            @RequestBody EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest,
+            HttpServletRequest request) {
+
+        log.info("User {} {} Request for Event №{} from ip address: {}",
+                userId, request.getMethod(), eventId, request.getRemoteAddr());
+
         return ResponseEntity.ok(eventPrivateService.changeRequestStatus(
                 userId, eventId, eventRequestStatusUpdateRequest));
     }
