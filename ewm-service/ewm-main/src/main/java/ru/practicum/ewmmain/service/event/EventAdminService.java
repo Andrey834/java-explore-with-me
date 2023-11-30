@@ -12,6 +12,7 @@ public interface EventAdminService {
     List<EventFullDto> getEvents(List<Long> users,
                                  List<StateEvent> states,
                                  List<Long> categories,
+                                 String address,
                                  LocalDateTime rangeStart,
                                  LocalDateTime rangeEnd,
                                  PageRequest pageRequest);

@@ -1,7 +1,6 @@
 package ru.practicum.ewmmain.service.request;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.request.ParticipationRequestDto;
@@ -20,7 +19,6 @@ import ru.practicum.ewmmain.service.user.UserService;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)

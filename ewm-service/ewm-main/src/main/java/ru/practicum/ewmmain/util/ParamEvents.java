@@ -23,6 +23,7 @@ public class ParamEvents {
     private LocalDateTime rangeStart;
     private LocalDateTime rangeEnd;
     private Boolean onlyAvailable;
+    private String address;
     private SortEvents sortEvents;
     private PageRequest pageRequest;
 }
