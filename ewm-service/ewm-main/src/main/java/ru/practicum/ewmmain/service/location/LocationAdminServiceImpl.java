@@ -20,7 +20,6 @@ public class LocationAdminServiceImpl implements LocationAdminService {
     private final LocationDao locationDao;
     private final RestClient client;
 
-
     @Override
     public List<LocationFullDto> getAll() {
         return locationDao.findAll().stream()

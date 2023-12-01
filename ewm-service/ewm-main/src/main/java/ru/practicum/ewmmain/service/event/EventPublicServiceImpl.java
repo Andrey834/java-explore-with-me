@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -101,9 +102,8 @@ public class EventPublicServiceImpl implements EventPublicService {
         client.sendHit("EWM", request.getRequestURI(), request.getRemoteAddr());
         List<ViewStats> stats = client.getStat(request.getRequestURI());
 
-
         long hit = stats.stream()
-                .filter(stat -> stat.getUri().equals(request.getRequestURI()))
+                .filter(stat -> Objects.equals(stat.getUri(), request.getRequestURI()))
                 .map(ViewStats::getHits)
                 .findFirst().orElse(0L);
 
