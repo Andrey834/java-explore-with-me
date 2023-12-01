@@ -49,7 +49,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     private final LocationDao locationDao;
     private final CategoryPublicService categoryPublicService;
     private final UserService userService;
-    private final int DEFAULT_RADIUS = 200;
+    private static final int RADIUS = 200;
 
     @Override
     public List<EventShortDto> getEvents(long userId, PageRequest pageRequest) {
@@ -76,7 +76,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         locationDao.findByLatAndLon(event.getLocation().getLat(), event.getLocation().getLon())
                 .ifPresent(event::setLocation);
 
-        if (event.getLocation().getRadius() == 0) event.getLocation().setRadius(DEFAULT_RADIUS);
+        if (event.getLocation().getRadius() == 0) event.getLocation().setRadius(RADIUS);
 
         return EventMapper.eventToEventFullDto(eventDao.save(event));
     }
