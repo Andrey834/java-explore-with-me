@@ -1,7 +1,6 @@
 package ru.practicum.ewmmain.service.event;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +29,7 @@ import ru.practicum.ewmmain.model.Location;
 import ru.practicum.ewmmain.model.ParticipationRequest;
 import ru.practicum.ewmmain.model.User;
 import ru.practicum.ewmmain.repository.EventDao;
+import ru.practicum.ewmmain.repository.LocationDao;
 import ru.practicum.ewmmain.repository.RequestDao;
 import ru.practicum.ewmmain.service.category.CategoryPublicService;
 import ru.practicum.ewmmain.service.user.UserService;
@@ -40,15 +40,16 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class EventPrivateServiceImpl implements EventPrivateService {
     private final EventDao eventDao;
     private final RequestDao requestDao;
+    private final LocationDao locationDao;
     private final CategoryPublicService categoryPublicService;
     private final UserService userService;
+    private static final int RADIUS = 200;
 
     @Override
     public List<EventShortDto> getEvents(long userId, PageRequest pageRequest) {
@@ -61,8 +62,9 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     @Override
     @Transactional
     public EventFullDto addEvent(long userId, NewEventDto newEventDto) {
-        if (LocalDateTime.parse(
-                newEventDto.getEventDate(), DateFormatter.FORMATTER).isBefore(LocalDateTime.now())) {
+        if (LocalDateTime.parse(newEventDto.getEventDate(), DateFormatter.FORMATTER)
+                .isBefore(LocalDateTime.now())) {
+
             throw new BadDateEventException("EventDate must be future");
         }
 
@@ -70,6 +72,11 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
         User user = UserMapper.userDtoToUser(userService.getUserDto(userId));
         Event event = EventMapper.newEventDtoToEvent(user, CategoryMapper.categoryDtoToCategory(category), newEventDto);
+
+        locationDao.findByLatAndLon(event.getLocation().getLat(), event.getLocation().getLon())
+                .ifPresent(event::setLocation);
+
+        if (event.getLocation().getRadius() == 0) event.getLocation().setRadius(RADIUS);
 
         return EventMapper.eventToEventFullDto(eventDao.save(event));
     }
@@ -190,9 +197,16 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                 categoryPublicService.getCategory(request.getCategory()));
 
         if (request.getStateAction() != null) {
-            event.setState(request.getStateAction().equals("CANCEL_REVIEW")
-                    ? StateEvent.CANCELED
-                    : StateEvent.PENDING);
+            switch (request.getStateAction()) {
+                case "CANCEL_REVIEW":
+                    event.setState(StateEvent.CANCELED);
+                    break;
+                case "SEND_TO_REVIEW":
+                    event.setState(StateEvent.PENDING);
+                    break;
+                default:
+                    throw new BadDateEventException("Unread StateEvent");
+            }
         }
 
         return event.toBuilder()
