@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.dto.compilation.CompilationDto;
 import ru.practicum.dto.compilation.NewCompilationDto;
 import ru.practicum.dto.compilation.UpdateCompilationRequest;
-import ru.practicum.ewmmain.service.compilation.CompilationAdminServiceImpl;
+import ru.practicum.ewmmain.service.compilation.CompilationAdminService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -25,7 +25,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RequestMapping(path = "/admin/compilations")
 public class CompilationAdminController {
-    private final CompilationAdminServiceImpl service;
+    private final CompilationAdminService service;
 
     @PostMapping()
     public ResponseEntity<CompilationDto> saveCompilation(@Valid @RequestBody NewCompilationDto newCompilationDto,

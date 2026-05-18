@@ -41,7 +41,7 @@ public class EventPublicController {
             @RequestParam(name = "onlyAvailable", required = false) Boolean onlyAvailable,
             @RequestParam(name = "address", required = false) String address,
             @RequestParam(name = "sort", required = false) SortEvents sortEvents,
-            @RequestParam(name = "from", required = false, defaultValue = "0") @Min(1) Integer from,
+            @RequestParam(name = "from", required = false, defaultValue = "0") @Min(0) Integer from,
             @RequestParam(name = "size", required = false, defaultValue = "10") @Min(1) @Max(100) Integer size,
             HttpServletRequest request
     ) {

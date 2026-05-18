@@ -46,8 +46,10 @@ public class EventPublicServiceImpl implements EventPublicService {
         Float lon = null;
         if (paramEvents.getAddress() != null) {
             LocationDto locationDto = client.getLocationFromAddress(paramEvents.getAddress());
-            lat = locationDto.getLat();
-            lon = locationDto.getLon();
+            if (locationDto != null) {
+                lat = locationDto.getLat();
+                lon = locationDto.getLon();
+            }
         }
 
         List<EventShortDto> events = eventDao.getEventsPublicWithParam(
@@ -74,7 +76,8 @@ public class EventPublicServiceImpl implements EventPublicService {
 
             Map<Long, Long> mapStats = new HashMap<>();
             stats.forEach(stat -> {
-                Long id = (long) stat.getUri().split("/", -1).length - 1;
+                String[] parts = stat.getUri().split("/");
+                Long id = Long.parseLong(parts[parts.length - 1]);
                 Long hits = stat.getHits();
                 mapStats.put(id, hits);
             });

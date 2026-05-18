@@ -41,7 +41,7 @@ public class EventAdminController {
             @RequestParam(name = "rangeEnd", required = false, defaultValue = "2300-01-01 12:00:00")
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
             @RequestParam(name = "address", required = false) String address,
-            @RequestParam(name = "from", required = false, defaultValue = "0") @Min(1) Integer from,
+            @RequestParam(name = "from", required = false, defaultValue = "0") @Min(0) Integer from,
             @RequestParam(name = "size", required = false, defaultValue = "10") @Min(1) @Max(100) Integer size,
             HttpServletRequest request) {
 

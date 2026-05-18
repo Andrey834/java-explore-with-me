@@ -33,7 +33,7 @@ public class UsersAdminController {
 
     @GetMapping
     public ResponseEntity<List<UserDto>> getUsers(
-            @RequestParam(name = "from", required = false, defaultValue = "0") @Min(1) Integer from,
+            @RequestParam(name = "from", required = false, defaultValue = "0") @Min(0) Integer from,
             @RequestParam(name = "size", required = false, defaultValue = "10") @Min(1) @Max(100) Integer size,
             @RequestParam(name = "ids", required = false) List<Long> ids,
             HttpServletRequest request) {

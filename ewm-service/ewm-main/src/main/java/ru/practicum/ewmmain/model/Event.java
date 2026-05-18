@@ -20,6 +20,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Transient;
@@ -39,7 +40,7 @@ public class Event {
     private Long id;
     @Column(length = 2000)
     private String annotation;
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category", referencedColumnName = "id")
     private Category category;
     private Long confirmedRequests;
@@ -48,7 +49,7 @@ public class Event {
     private String description;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "initiator", referencedColumnName = "id")
     private User initiator;
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

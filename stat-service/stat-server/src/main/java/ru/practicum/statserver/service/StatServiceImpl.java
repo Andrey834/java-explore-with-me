@@ -1,7 +1,6 @@
 package ru.practicum.statserver.service;
 
 import lombok.RequiredArgsConstructor;
-import org.hibernate.QueryException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.statserver.mapper.EndpointHitMapper;
@@ -36,8 +35,8 @@ public class StatServiceImpl implements StatService {
         LocalDateTime decodeStart = decodeDate(start);
         LocalDateTime decodeEnd = decodeDate(end);
 
-        if(decodeStart.isAfter(decodeEnd)) {
-            throw new QueryException(decodeStart + " not valid for start date");
+        if (decodeStart.isAfter(decodeEnd)) {
+            throw new IllegalArgumentException(decodeStart + " not valid for start date");
         }
 
         if (isUnique && uris != null && !uris.isEmpty()) return repository.getHitsWithUrisAndUnique(decodeStart, decodeEnd, uris);
